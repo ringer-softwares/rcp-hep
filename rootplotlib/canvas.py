@@ -1,13 +1,13 @@
 
 __all__ = ['format_canvas_axes', 'create_canvas', 'create_ratio_canvas']
 
-from ROOT import TCanvas,TPad, TColor
+from ROOT import TCanvas, TPad
 
 
 
 def create_canvas( name, title, canw=500, canh=500 ):
     canvas = TCanvas( 'canvas', "", 700, 500 )
-    rpl.set_canvas(canvas)
+    rpl.set_figure(canvas)
     return canvas
 
 
@@ -15,7 +15,7 @@ def create_canvas( name, title, canw=500, canh=500 ):
 def create_ratio_canvas( name, title, canw=500, canh=600, ratio_size_as_fraction=0.35, drawopt='pE1'):
 
     canvas = TCanvas(name,title,canw,canh)
-    rpl.set_canvas(canvas)
+    rpl.set_figure(canvas)
     canvas.SetFillStyle(4050)
 
     # Top
@@ -67,7 +67,9 @@ def format_canvas_axes(  XTitleSize   = 22
                         ,ZLabelFont   = 43
                         ) :
 
-    canvas = rpl.get_canvas()
+    fig = rpl.get_figure()
+    canvas = fig.get_canvas()
+
     if canvas:
         if canvas.GetPrimitive('pad_top') :
             format_canvas_axes(canvas.GetPrimitive('pad_top'),XLabelOffset=0.1
@@ -125,3 +127,9 @@ def format_canvas_axes(  XTitleSize   = 22
 
         canvas.Modified()
         canvas.Update()
+
+
+
+def savefig( output ):
+    fig = rpl.get_figure()
+    fig.savefig(output)
