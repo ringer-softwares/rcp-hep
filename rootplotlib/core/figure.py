@@ -4,15 +4,16 @@ __all__ = ['Figure']
 
 from ROOT import TH1, TH2
 import gc
+import sys
 
 class Figure( object ):
 
     def __init__(self, canvas=None):
         self.__canvas = canvas
-        self.__collection = []
+        self.__collections = []
 
 
-    def get_canvas(self):
+    def canvas(self):
         return self.__canvas
 
 
@@ -22,15 +23,22 @@ class Figure( object ):
 
     def clear(self):
         self.__canvas.Close()
-        self.__collection = []
+        for obj in self.__collections:
+            obj.Delete()
+        self.__collections = []
         gc.collect()
+
+
+    def append(self, obj):
+        self.__collections.append(obj)
+
 
     #
     # Get pad. If none or not exist, return the main canvas
     #
     def get_pad( self, pad=None ):
 
-        if pad and (primitive.GetName() for primitive in canvas.GetListOfPrimitives()):
+        if pad and (pad==primitive.GetName() for primitive in self.__canvas.GetListOfPrimitives()):
             canvas = self.__canvas.GetPrimitive(pad)
         else:
             canvas = self.__canvas  
@@ -38,21 +46,27 @@ class Figure( object ):
 
 
     #
-    # Add histogram
+    # Add histogram into the figure
     #
     def add_hist(self, hist,  drawopt='pE1', pad=None):
-
         canvas = self.get_pad(pad)
-        h = hist.Clone()
         if not "same" in drawopt: drawopt += ' sames'
-        h.SetName('%s_%s'%(canvas.GetName(),hist.GetName()))
         canvas.cd()
-        h.Draw(drawopt)
-        self.__collection.append(h)
+        hist.Draw(drawopt) # add into the list of primitives
         canvas.Modified()
         canvas.Update()
+        self.append(hist)
 
-
+    #
+    # Add legend into the figure
+    #
+    def add_legend(self, leg, pad=None):
+        canvas = self.get_pad(pad)
+        canvas.cd()
+        leg.Draw() # add into the list of primitives
+        canvas.Modified()
+        canvas.Update()
+        self.append(leg)
 
     #
     # Set x label
@@ -143,7 +157,7 @@ class Figure( object ):
             canvas.Update()
 
 
-    def get_y_axis_ranges(self, pad=None, ignore_zeros=False, ignore_errors=False):
+    def get_yaxis_ranges(self, pad=None, ignore_zeros=False, ignore_errors=False):
 
         ymin = sys.float_info.max
         ymax = sys.float_info.min
@@ -198,3 +212,7 @@ class Figure( object ):
 
     def savefig(self, output):
         self.__canvas.SaveAs(output)
+
+
+    def show(self):
+        self.__canvas.Draw()

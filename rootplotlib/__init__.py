@@ -1,7 +1,8 @@
 
 import gc
+import ROOT
 
-__all__ = ['set_figure', 'get_figure', 'clear']
+__all__ = ['set_figure', 'get_figure', 'clear', 'supress_root_warnings']
 
 from . import core
 __all__.extend( core.__all__ )
@@ -9,6 +10,9 @@ from .core import *
 
 global figure
 figure = Figure()
+
+def supress_root_warnings():
+    ROOT.gErrorIgnoreLevel=ROOT.kFatal
 
 def set_figure( canvas ):
     global figure
@@ -46,3 +50,6 @@ from . import styles
 __all__.extend( styles.__all__ )
 from .styles import *
 
+from . import colors
+__all__.extend( colors.__all__ )
+from .colors import *

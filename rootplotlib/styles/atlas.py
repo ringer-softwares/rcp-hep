@@ -7,6 +7,9 @@ __all__ = [ "set_atlas_style",
           ]
 
 from ROOT import gROOT, gStyle
+from ROOT import TLatex, gPad
+
+import rootplotlib as rpl
 
 def set_atlas_style ():
   
@@ -57,26 +60,32 @@ def set_atlas_style ():
   gStyle.SetPalette(1)
 
 
-def set_atlas_label( x, y, text):
-    set_label('ATLAS', x, y, text)
+def set_atlas_label( x, y, text, pad=None):
+    set_label('ATLAS', x, y, text, pad=pad)
 
 
-def set_label(name, x, y, text):
-  from ROOT import TLatex, gPad
+def set_label(name, x, y, text, pad=None):
+
+  fig = rpl.get_figure()
+  canvas = fig.get_pad(pad)
+  canvas.cd()
+
   experiment = TLatex()
   experiment.SetNDC()
   experiment.SetTextFont(72)
-  experiment.SetTextColor(color)
+  experiment.SetTextColor(1)
   delx = 0.115*696*gPad.GetWh()/(472*gPad.GetWw())
   experiment.DrawLatex(x,y,name)
   label = TLatex()
   label.SetNDC()
   label.SetTextFont(42)
-  label.SetTextColor(0)
+  label.SetTextColor(1)
   label.DrawLatex(x+delx,y,text)
 
-
-
+  fig.append(label)
+  fig.append(experiment)
+  canvas.Modified()
+  canvas.Update()
 
 
 
