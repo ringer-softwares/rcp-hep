@@ -1,23 +1,46 @@
 
-__all__ = ['set_text']
+__all__ = ['add_text', 'add_legend']
 
-from ROOT import TLegend
+from ROOT import TLegend, TLatex, TH1, TH2
 import rootplotlib as rpl
 
 
-def set_text(text_list, x1=.2, y1=.84, x2=.5, y2=.9, angle=0, textsize=12, pad=None):
-    
-    if type(text_list) is str:
-        text_list = [ text_list ]
+def add_text(x,y,text,color=1, textfont=42, textsize=0.1):
+    fig = rpl.get_figure()
+    tex = TLatex()
+    tex.SetNDC()
+    tex.SetTextFont(textfont)
+    tex.SetTextColor(color)
+    tex.SetTextSize(textsize)
+    tex.DrawLatex(x,y,text)
+    fig.add_legend(tex)
 
-    leg = TLegend(x1,y1,x2,y2)
-    leg.SetName('leg')
+
+def add_legend( legends, x1=.8, y1=.8, x2=.9, y2=.9, pad=None, textsize=18, ncolumns=1, option='f', squarebox=True, title=''):
+
+    fig = rpl.get_figure()
+    canvas = fig.get_pad(pad)
+    leg = TLegend(x1,y1,x2,y2,title)
+    leg.SetName('legend' + ("_" + title if title else ""))
+    leg.SetTextFont(43)
     leg.SetTextSize(textsize)
     leg.SetTextFont(43)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0)
-    for text in text_list :
-        leg.AddEntry(0,text,'')
-    rpl.add_legend(leg)
-    return leg
+    leg.SetNColumns(ncolumns)
 
+    idx = 0
+    for primitive in canvas.GetListOfPrimitives():
+        if issubclass(type(primitive), TH1) or issubclass(type(primitive),TH2):
+            leg.AddEntry(primitive, legends[idx],option) # plef
+            idx+=1
+
+    # recipe for making roughly square boxes
+    if squarebox:
+        h = leg.GetY2()-leg.GetY1()
+        w = leg.GetX2()-leg.GetX1()
+        if leg.GetNRows():
+            leg.SetMargin(leg.GetNColumns()*h/float(leg.GetNRows()*w))
+    leg.SetHeader("#font[63]{" + title + "}")
+    fig.add_legend(leg)
+ 

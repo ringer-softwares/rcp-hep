@@ -1,33 +1,25 @@
 
 __all__ = [ 
-            'add_hist',
-            'hist1d',
-            'fill1d',
-            'density',
-            'divide',
-            'shift',
+            #'new',
+            #'fill',
+            #'density',
+            #'divide',
+            #'shift',
             ]
 
 
 import array
 import rootplotlib as rpl
 import ROOT
-
-
-#
-# Add TH1 or TH2 object into the figure
-#
-def add_hist( hist, drawopt='pE1', pad=None):
-    fig = rpl.get_figure()
-    fig.add_hist(hist, drawopt, pad)
+import numpy as np
 
 
 #
 # Create TH1F histogram
 #
-def hist1d( name, bins, xmin=None, xmax=None, title=''):
+def new( name, bins, xmin=None, xmax=None, title=''):
 
-    if type(bins) is int and (xmin and xmax):
+    if type(bins) is int:
         return ROOT.TH1F(name, title, bins, xmin, xmax)
     else:
         if type(bins) is list:
@@ -37,9 +29,9 @@ def hist1d( name, bins, xmin=None, xmax=None, title=''):
         return ROOT.TH1F(name, title, len(bins), bins)
 
 
-def fill1d( hist, x_values ):
+def fill( hist, values ):
     w = array.array( 'd', np.ones_like( values ) )
-    hist.FillN( len(x_values), array.array('d',  x_values),  w)
+    hist.FillN( len(values), array.array('d',  values),  w)
 
     
 def density( hist ):

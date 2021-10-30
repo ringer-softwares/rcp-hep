@@ -1,9 +1,16 @@
 
-__all__ = [ 'plot_profiles' ]
+__all__ = [ 'plot_profiles', 'add_hist' ]
 
 
 
 import rootplotlib as rpl
+
+#
+# Add TH1 or TH2 object into the figure
+#
+def add_hist( hist, drawopt='pE1', pad=None):
+    fig = rpl.get_figure()
+    fig.add_hist(hist, drawopt, pad)
 
 
 
@@ -59,7 +66,7 @@ def plot_profiles( hists, xlabel, these_colors, these_markers,
             rpl.add_hist(hist, drawopt = drawopt)
     
     rpl.format_canvas_axes(XLabelSize=18, YLabelSize=18, XTitleOffset=0.87, YTitleOffset=1.5)
-    rpl.set_axis_labels(xlabel,ylabel,rlabel)
+    rpl.set_axis_labels(xlabel,ylabel,ratio_label)
     return canvas
 
 

@@ -19,6 +19,7 @@ class Figure( object ):
 
     def set_canvas( self , canvas ):
         self.__canvas = canvas
+        self.__collections = []
 
 
     def clear(self):

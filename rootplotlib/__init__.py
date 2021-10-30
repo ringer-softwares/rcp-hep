@@ -38,9 +38,13 @@ from . import plots
 __all__.extend( plots.__all__ )
 from .plots import *
 
-from . import hists
-__all__.extend( hists.__all__ )
-from .hists import *
+from . import hist1d
+__all__.extend( hist1d.__all__ )
+from .hist1d import *
+
+from . import hist2d
+__all__.extend( hist2d.__all__ )
+from .hist2d import *
 
 from . import legends
 __all__.extend( legends.__all__ )
