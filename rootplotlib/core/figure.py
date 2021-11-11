@@ -3,6 +3,7 @@ __all__ = ['Figure']
 
 
 from ROOT import TH1, TH2
+import itertools
 import gc
 import sys
 
@@ -25,7 +26,8 @@ class Figure( object ):
     def clear(self):
         self.__canvas.Close()
         for obj in self.__collections:
-            obj.Delete()
+            if obj:
+                obj.Delete()
         self.__collections = []
         gc.collect()
 

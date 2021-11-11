@@ -17,16 +17,16 @@ import numpy as np
 #
 # Create TH1F histogram
 #
-def new( name, bins, xmin=None, xmax=None, title=''):
+def new( name, bins, xmin, xmax, title=''):
+    return ROOT.TH1F(name, title, bins, xmin, xmax)
 
-    if type(bins) is int:
-        return ROOT.TH1F(name, title, bins, xmin, xmax)
-    else:
-        if type(bins) is list:
-            bins = array('d', bins)
-        elif type(bins) is np.array:
-            bins = array('d', bins.tolist())
-        return ROOT.TH1F(name, title, len(bins), bins)
+
+def new2( name, xbins, title=''):
+    if type(xbins) is list:
+        xbins = array('d', xbins)
+    elif type(xbins) is np.array:
+        xbins = array('d', xbins.tolist())
+    return ROOT.TH1F(name, title, len(xbins), xbins)
 
 
 def fill( hist, values ):
@@ -47,10 +47,10 @@ def density( hist ):
 
 
 def divide( hist_num, hist_den ):
-    h = hist_num.Clone()
-    h.SetName(hist_num.GetName()+'_ratio')
-    h.Divide( hist_den )
-    return h
+    hist = hist_num.Clone()
+    hist.SetName(hist_num.GetName()+'_ratio')
+    hist.Divide( hist_num, hist_den,1.,1.,'B' )
+    return hist
 
 
 def shift( hist, shift_units ):
@@ -61,4 +61,18 @@ def shift( hist, shift_units ):
         content = hist.GetBinContent(b)
         h.SetBinContent(b+shift_units, content)
     return h
+
+
+
+def rebin( hist, nbins, xmin, xmax ):
+  h = ROOT.TH1F(hist.GetName()+'_resize', hist.GetTitle(), nbins,xmin,xmax)
+  for bin in range(h.GetNbinsX()):
+    x = h.GetBinCenter(bin+1)
+    m_bin = hist.FindBin(x)
+    y = hist.GetBinContent(m_bin)
+    error = hist.GetBinError(m_bin)
+    h.SetBinContent(bin+1,y)
+    h.SetBinError(bin+1,error)
+  return h
+
 

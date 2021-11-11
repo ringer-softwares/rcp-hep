@@ -5,8 +5,10 @@ from ROOT import TLegend, TLatex, TH1, TH2
 import rootplotlib as rpl
 
 
-def add_text(x,y,text,color=1, textfont=42, textsize=0.1):
+def add_text(x,y,text,color=1, textfont=42, textsize=0.1, pad=None):
     fig = rpl.get_figure()
+    pad = fig.get_pad(pad)
+    pad.cd()
     tex = TLatex()
     tex.SetNDC()
     tex.SetTextFont(textfont)
@@ -29,11 +31,13 @@ def add_legend( legends, x1=.8, y1=.8, x2=.9, y2=.9, pad=None, textsize=18, ncol
     leg.SetFillStyle(0)
     leg.SetNColumns(ncolumns)
 
-    idx = 0
+    primitives = []
     for primitive in canvas.GetListOfPrimitives():
         if issubclass(type(primitive), TH1) or issubclass(type(primitive),TH2):
-            leg.AddEntry(primitive, legends[idx],option) # plef
-            idx+=1
+            primitives.append( primitive )
+
+    for idx, legend in enumerate(legends): 
+        leg.AddEntry(primitives[idx], legend, option) # plef
 
     # recipe for making roughly square boxes
     if squarebox:

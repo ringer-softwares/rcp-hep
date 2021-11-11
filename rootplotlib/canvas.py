@@ -52,6 +52,7 @@ def format_canvas_axes(  XTitleSize   = 22
                         ,XLabelSize   = 22
                         ,XLabelOffset = 0.002
                         ,XLabelFont   = 43
+                        ,XNDiv = None
 
                         ,YTitleSize   = 22
                         ,YTitleOffset = 1.75
@@ -83,6 +84,8 @@ def format_canvas_axes(  XTitleSize   = 22
         primitive.GetXaxis().SetLabelOffset(XLabelOffset/float(canvas.GetHNDC()))
         primitive.GetXaxis().SetLabelFont  (XLabelFont  )
         primitive.GetXaxis().SetTickLength(0.02/float(canvas.GetHNDC()))
+        if XNDiv:
+            primitive.GetXaxis().SetNdivisions (XNDiv[0],XNDiv[1],XNDiv[2])
         primitive.GetYaxis().SetTitleSize  (YTitleSize  )
         primitive.GetYaxis().SetTitleOffset(YTitleOffset)
         primitive.GetYaxis().SetTitleFont  (YTitleFont  )

@@ -21,22 +21,42 @@ import numpy as np
 def new( name, xbins, xmin, xmax, ybins, ymin, ymax, title=''):
     return ROOT.TH2F(name, title, xbins, xmin, xmax, ybins, ymin, ymax)
 
-#def new( name, xbins, ybins, title=''):
-#    if type(xbins) is list:
-#        xbins = array('d', xbins)
-#    elif type(xbins) is np.array:
-#        xbins = array('d', xbins.tolist())
-#    if type(ybins) is list:
-#        ybins = array('d', ybins)
-#    elif type(xbins) is np.array:
-#        ybins = array('d', ybins.tolist())
-#    return ROOT.TH2F(name, title, len(xbins), xbins, len(ybins), ybins)
+
+def new2( name, xbins, ybins, title=''):
+    if type(xbins) is list:
+        xbins = array.array('d', xbins)
+    elif type(xbins) is np.array:
+        xbins = array.array('d', xbins.tolist())
+    if type(ybins) is list:
+        ybins = array.array('d', ybins)
+    elif type(xbins) is np.array:
+        ybins = array.array('d', ybins.tolist())
+    print(xbins)
+    print(ybins)
+    return ROOT.TH2F(name, title, len(xbins)-1, xbins, len(ybins)-1, ybins)
 
 
 
-def fill( hist, values ):
-    w = array.array( 'd', np.ones_like( values ) )
-    hist.FillN( len(values), array.array('d',  values),  w)
+def fill( hist, xvalues, yvalues ):
+
+    w = array.array( 'd', np.ones_like( xvalues ) )
+
+    # treat x values
+    if type(xvalues) is list:
+        xvalues = array('d', xvalues)
+    elif type(xvalues) is np.array:
+        xvalues = array('d', xvalues.tolist())
+
+    # treat y values
+    if type(yvalues) is list:
+        yvalues = array('d', yvalues)
+    elif type(xvalues) is np.array:
+        yvalues = array('d', yvalues.tolist())
+
+    if len(xvalues) != len(yvalues):
+        print('It is not possible to fill the histogram. x/y values must be the same size')
+    else:
+        hist.FillN( len(xvalues), xvalues, yvalues,  w)
 
     
 def density( hist ):
